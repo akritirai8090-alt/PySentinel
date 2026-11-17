@@ -1,0 +1,7 @@
+health_log.txt
+pychache/
+*.pyc
+.venv/
+venv/
+.env
+
