@@ -89,7 +89,7 @@ def generate_report (path):
     #get disk information 
     total , used,  free = disk_usage (path)
     size = folder_size (path)
-    biggest = largest_files (path, 5 )
+    biggest = largest_files (path, 5)
 
 
     #caculate free disk percentage 
@@ -119,19 +119,27 @@ def generate_report (path):
         print("No files are found")
 
     print ("===============================")
-    return free_percent , size 
+    return free_percent , size, biggest
 
 
 #Function no:-6 Save report summary in log file 
-def save_log(free_percent, size):
+def save_log(free_percent, size, biggest):
     current_time = datetime.now()
-    with open ("health_log.txt", "a", encoding = "utf-8") as file:
+    with open("health_log.txt", "a", encoding="utf-8") as file:
+       file.write("\n========== SYSTEM HEALTH REPORT ==========\n")
+       file.write(f"Time: {current_time}\n")
+       file.write(f"Free Disk: {free_percent:.2f}%\n")
+       file.write(f"Folder Size: {human_size(size)}\n")
+           
+       file.write("\nTOP 5 LARGEST FILES:\n")   
+           
+       for file_size, file_path in biggest:
+           file.write(f"{file_path} - {human_size(file_size)}\n")
 
-        file.write(
-            f"Time:{current_time} | "
-            f"Free Disk: {free_percent:.2f}% |"
-            f"Folder Size: {human_size(size)}\n"
-        )
+       file.write("==========================================\n")
+
+
+
 
 #MAIN FUNCTION :RUN COMPLETE PROGRAM 
 
@@ -148,9 +156,9 @@ def main():
             print("Error: Please enter a folder path.")
             return 
     try:
-        free_percent ,size = generate_report (path)
+        free_percent ,size, biggest = generate_report (path)
 
-        save_log(free_percent ,size)
+        save_log(free_percent ,size, biggest)
         print ("\n Health report saved successfully!")
 
     except OSError as error:
